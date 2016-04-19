@@ -6,13 +6,12 @@ use libc::size_t;
 use std::os::unix::io::AsRawFd;
 use std::ptr;
 use std::slice;
-use tempfile::TempFile;
+use tempfile::NamedTempFile;
 
 #[test]
 fn test_basic_mtbl() {
-    let mut tempfile_v = TempFile::shared(2).unwrap();
-    let tempfile_writer = tempfile_v.pop().unwrap();
-    let tempfile_reader = tempfile_v.pop().unwrap();
+    let tempfile_writer = NamedTempFile::new().unwrap();
+    let tempfile_reader = tempfile_writer.reopen().unwrap();
     unsafe {
         // Create a simple MTBL file.
         let mut options = mtbl_sys::mtbl_writer_options_init();
