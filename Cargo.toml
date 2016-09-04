@@ -15,6 +15,7 @@ authors = ["Leon Barrett <leon@barrettnexus.com>"]
 description = "FFI Bindings to the MTBL C library (https://github.com/farsightsec/mtbl)"
 repository = "https://github.com/leon-barrett/mtbl-sys"
 homepage = "https://github.com/leon-barrett/mtbl-sys"
+documentation = "https://leon-barrett.github.io/mtbl-sys/"
 readme = "README.md"
 keywords = ["bindings", "database", "mtbl", "cdb"]
 license = "MIT/Apache-2.0"
