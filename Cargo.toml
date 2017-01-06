@@ -9,7 +9,7 @@
 [package]
 
 name = "mtbl-sys"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Leon Barrett <leon@barrettnexus.com>"]
 
 description = "FFI Bindings to the MTBL C library (https://github.com/farsightsec/mtbl)"
