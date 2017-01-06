@@ -21,7 +21,7 @@ keywords = ["bindings", "database", "mtbl", "cdb"]
 license = "MIT/Apache-2.0"
 
 [dependencies]
-libc = "0.2.10"
+libc = "0.2.19"
 
 [dev-dependencies]
-tempfile = "2.1.2"
+tempfile = "2.1.4"
