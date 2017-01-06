@@ -14,7 +14,7 @@
 //! bindings](https://github.com/andrew-d/tinycdb-rs), except using sorted maps
 //! instead of hashmaps.
 //!
-//! Version 0.1 of mtbl-sys covers the 0.6 version of the MTBL C library.
+//! Version 0.2 of mtbl-sys covers the 0.8 version of the MTBL C library.
 //!
 //! # Function documentation
 //!
@@ -77,6 +77,8 @@ pub enum CompressionType {
     MTBL_COMPRESSION_NONE = 0,
     MTBL_COMPRESSION_SNAPPY = 1,
     MTBL_COMPRESSION_ZLIB = 2,
+    MTBL_COMPRESSION_LZ4 = 3,
+    MTBL_COMPRESSION_LZ4HC = 4,
 }
 
 #[derive(Clone,Copy,Debug,PartialEq)]
@@ -95,6 +97,8 @@ pub struct mtbl_source;
 pub struct mtbl_reader;
 #[repr(C)]
 pub struct mtbl_reader_options;
+#[repr(C)]
+pub struct mtbl_metadata;
 #[repr(C)]
 pub struct mtbl_writer;
 #[repr(C)]
@@ -193,18 +197,50 @@ extern "C" {
 
     pub fn mtbl_reader_source(reader: *mut mtbl_reader) -> *const mtbl_source;
 
+    pub fn mtbl_reader_metadata(reader: *mut mtbl_reader) -> *const mtbl_metadata;
+
     // reader options
 
     pub fn mtbl_reader_options_init() -> *mut mtbl_reader_options;
 
     pub fn mtbl_reader_options_destroy(options: *mut *mut mtbl_reader_options);
 
-    // in mtbl v0.8.0
-    // pub fn mtbl_reader_options_set_madvise_random(options: *mut mtbl_reader_options,
-    //                                               madvise_random: bool);
-
+    // defaults to false
     pub fn mtbl_reader_options_set_verify_checksums(options: *mut mtbl_reader_options,
                                                     verify_checksums: bool);
+
+    // defaults to false
+    pub fn mtbl_reader_options_set_madvise_random(options: *mut mtbl_reader_options,
+                                                  madvise_random: bool);
+
+    // reader metadata
+
+    /// Byte offset in the MTBL file where the index begins.
+    pub fn mtbl_metadata_index_block_offset(m: *const mtbl_metadata) -> u64;
+
+    /// Maximum size of an uncompressed data block, see mtbl_writer(3).
+    pub fn mtbl_metadata_data_block_size(m: *const mtbl_metadata) -> u64;
+
+    /// One of the compression values allowed by mtbl_writer(3).
+    pub fn mtbl_metadata_compression_algorithm(m: *const mtbl_metadata) -> CompressionType;
+
+    /// Total number of key-value entries.
+    pub fn mtbl_metadata_count_entries(m: *const mtbl_metadata) -> u64;
+
+    /// Total number of data blocks.
+    pub fn mtbl_metadata_count_data_blocks(m: *const mtbl_metadata) -> u64;
+
+    /// Total number of bytes consumed by data blocks.
+    pub fn mtbl_metadata_bytes_data_blocks(m: *const mtbl_metadata) -> u64;
+
+    /// Total number of bytes consumed by the index.
+    pub fn mtbl_metadata_bytes_index_block(m: *const mtbl_metadata) -> u64;
+
+    /// Total number of bytes that all keys would occupy if stored end-to-end in a byte array with no delimiters.
+    pub fn mtbl_metadata_bytes_keys(m: *const mtbl_metadata) -> u64;
+
+    /// Total number of bytes that all values in the file would occupy if stored end-to-end in a byte array with no delimiters.
+    pub fn mtbl_metadata_bytes_values(m: *const mtbl_metadata) -> u64;
 
     // merger
 
@@ -240,6 +276,8 @@ extern "C" {
     pub fn mtbl_fileset_destroy(fileset: *mut *mut mtbl_fileset);
 
     pub fn mtbl_fileset_reload(fileset: *mut mtbl_fileset);
+
+    pub fn mtbl_fileset_reload_now(fileset: *mut mtbl_fileset);
 
     pub fn mtbl_fileset_source(fileset: *mut mtbl_fileset) -> *const mtbl_source;
 

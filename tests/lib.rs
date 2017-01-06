@@ -33,6 +33,18 @@ fn test_basic_mtbl() {
         let mut valptr: *const u8 = ptr::null();
         let mut vallen: size_t = 0;
 
+        // Verify that the metadata is correct.
+        let metadata = mtbl_sys::mtbl_reader_metadata(reader);
+        assert_eq!(32, mtbl_sys::mtbl_metadata_index_block_offset(metadata));
+        assert_eq!(8192, mtbl_sys::mtbl_metadata_data_block_size(metadata));
+        assert_eq!(mtbl_sys::CompressionType::MTBL_COMPRESSION_ZLIB, mtbl_sys::mtbl_metadata_compression_algorithm(metadata));
+        assert_eq!(1, mtbl_sys::mtbl_metadata_count_entries(metadata));
+        assert_eq!(1, mtbl_sys::mtbl_metadata_count_data_blocks(metadata));
+        assert_eq!(32, mtbl_sys::mtbl_metadata_bytes_data_blocks(metadata));
+        assert_eq!(23, mtbl_sys::mtbl_metadata_bytes_index_block(metadata));
+        assert_eq!(3, mtbl_sys::mtbl_metadata_bytes_keys(metadata));
+        assert_eq!(5, mtbl_sys::mtbl_metadata_bytes_values(metadata));
+
         // Verify that the key/value pair are present.
         let mut iter = mtbl_sys::mtbl_source_get(source,
                                                  "key".as_bytes().as_ptr(), 3);

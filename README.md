@@ -10,7 +10,7 @@ bindings](https://github.com/andrew-d/tinycdb-rs), except using sorted maps
 instead of hashmaps. For more information, see the [mtbl
 README](https://github.com/farsightsec/mtbl).
 
-Version 0.1.X of mtbl-sys covers the 0.6 version of the MTBL C library.
+Version 0.2.X of mtbl-sys covers the 0.8 version of the MTBL C library.
 
 ## Dependencies
 
